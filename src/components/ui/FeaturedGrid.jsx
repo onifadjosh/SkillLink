@@ -1,7 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import React from 'react'
 import { Link } from 'react-router-dom'
-
 const FeaturedGrid = () => {
     return (
         <div className='flex justify-center items-center flex-col gap-8 mt-20'>
@@ -22,7 +20,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <ArrowRight />
+                            Learn More <i class="fa-solid fa-angle-right"></i>
                         </Link>
                     </div>
                 </div>
@@ -43,7 +41,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <ArrowRight />
+                            Learn More <i class="fa-solid fa-angle-right"></i>
                         </Link>
                     </div>
                 </div>
@@ -63,7 +61,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <ArrowRight />
+                            Learn More <i class="fa-solid fa-angle-right"></i>
                         </Link>
                     </div>
                 </div>

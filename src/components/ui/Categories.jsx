@@ -9,6 +9,7 @@ const Categories = () => {
                 <Link className='border-2 rounded-md py-2.5 px-8'>Design</Link>
                 <Link className='border-2 rounded-md py-2.5 px-8'>Tech</Link>
                 <Link className='border-2 rounded-md py-2.5 px-8'>Writing</Link>
+              
             </div>
         </div>
     )

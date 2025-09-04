@@ -91,10 +91,10 @@ const ProfilePage = () => {
                                     <p className="text-gray-600 text-sm">{post.content}</p>
                                 </div>
                                     <div className="flex space-x-3">
-                                        <button className="text-blue-600 hover:text-blue-800">
+                                        <button title='Edit' className="text-blue-600 hover:text-blue-800">
                                             <MdEdit size={20} />
                                         </button>
-                                        <button className="text-red-600 hover:text-red-800">
+                                        <button title='Delete' className="text-red-600 hover:text-red-800">
                                             <MdDelete size={20} />
                                         </button>
                                     </div>

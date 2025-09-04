@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom'
 
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState("overview")
-    const [overview, setOverview] = useState([])
-    const [saved, setSaved] = useState([])
-    const [activity, setActivity] = useState([])
+    // const [overview, setOverview] = useState([])
+    // const [saved, setSaved] = useState([])
+    // const [activity, setActivity] = useState([])
 
     const posts = [
         //should be replace with real title/content from user
@@ -25,7 +25,7 @@ const ProfilePage = () => {
                 <div>
                     <h2 className="text-2xl font-bold">John Doe</h2>
                     <p className="text-gray-500 mb-3">Frontend Developer | React Enthusiast</p>
-                    <Link to={'/editprofile'} className=" px-2.5 text-white py-2 hover:bg-blue-400 rounded-md bg-blue-500">Edit Profile</Link>
+                    <Link to={'/editprofile'} className=" px-2.5 text-white py-2 hover:bg-blue-700 rounded-md bg-blue-500">Edit Profile</Link>
                 </div>
             </div>
 
@@ -71,13 +71,13 @@ const ProfilePage = () => {
             </div>
 
             <div className="mt-6">
-                {activeTab === "overview" && (overview ?
+                {activeTab === "overview" && (
                     <div>
                         <h3 className="text-lg font-semibold">Profile Overview</h3>
                         <p className="text-gray-600 mt-2">
                             This section can display profile stats (posts, followers, reviews, etc.).
                         </p>
-                    </div> : 'Nothing to see yet...'
+                    </div>
                 )}
 
                 {activeTab === "posts" && (
@@ -101,26 +101,26 @@ const ProfilePage = () => {
                                 </div>
                             ))}
                         </div>
-                        <button className="mt-4 px-3.5 text-white py-1.5 hover:bg-blue-400 rounded-md bg-blue-500">+ New Post</button>
+                        <button className="mt-4 px-3.5 text-white py-1.5 hover:bg-blue-700 rounded-md bg-blue-500">+ New Post</button>
                     </div>
                 )}
 
-                {activeTab === "saved" && (saved ?
+                {activeTab === "saved" && (
                     <div>
                         <h3 className="text-lg font-semibold">Profile Overview</h3>
                         <p className="text-gray-600 mt-2">
                             This displays saved posts/items
                         </p>
-                    </div> : 'Nothing to see yet...'
+                    </div>
                 )}
 
-                {activeTab === "activity" && (activity ?
+                {activeTab === "activity" && (
                     <div>
                         <h3 className="text-lg font-semibold">Profile Overview</h3>
                         <p className="text-gray-600 mt-2">
                             This shows recent interactions
                         </p>
-                    </div> : 'Nothing to see yet...'
+                    </div>
                 )}
 
                 {activeTab === "settings" && (
@@ -144,8 +144,8 @@ const ProfilePage = () => {
                                 />
                             </div>
                             <div className="flex flex-wrap gap-3">
-                                <button className="px-3.5 text-white py-1.5 hover:bg-blue-400 rounded-md bg-blue-500">Save Changes</button>
-                                <button className="px-3.5 text-white py-1.5 hover:bg-red-400 rounded-md bg-red-500">Delete Account</button>
+                                <button className="px-3.5 text-white py-1.5 hover:bg-blue-800 rounded-md bg-blue-500">Save Changes</button>
+                                <button className="px-3.5 text-white py-1.5 hover:bg-red-600 rounded-md bg-red-500">Delete Account</button>
                             </div>
                         </form>
                     </div>

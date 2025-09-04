@@ -20,7 +20,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <i class="fa-solid fa-angle-right"></i>
+                            Learn More →
                         </Link>
                     </div>
                 </div>
@@ -41,7 +41,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <i class="fa-solid fa-angle-right"></i>
+                            Learn More →
                         </Link>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ const FeaturedGrid = () => {
                         </p>
 
                         <Link className="gap-1 flex items-center text-black underline">
-                            Learn More <i class="fa-solid fa-angle-right"></i>
+                            Learn More →
                         </Link>
                     </div>
                 </div>

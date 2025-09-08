@@ -31,6 +31,11 @@ const SignIn = () => {
                   </div>
                 </div>
 
+                <div className='gap-3 flex' >
+                  <input type="checkbox" name="" id="" />
+                  <span>Remember me</span>
+                </div>
+
                 <div>
                   <button type="submit" className="flex w-full justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">Sign in</button>
                 </div>

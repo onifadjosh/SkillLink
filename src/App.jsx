@@ -6,6 +6,10 @@ import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Register from './pages/Register'
 import ProfilePage from './pages/ProfilePage'
+import EditProfile from './pages/EditProfile'
+
+
+
 
 const App = () => {
   return (
@@ -16,6 +20,7 @@ const App = () => {
         <Route path='/login' element={<SignIn />} />
         <Route path='/register' element={<Register/>} />
         <Route path='/profile' element={<ProfilePage/>} />
+        <Route path='editprofile' element={<EditProfile/>}/>
 
 
 

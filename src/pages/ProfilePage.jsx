@@ -18,8 +18,8 @@ const ProfilePage = () => {
         <div className="max-w-5xl mx-auto p-6">
             <div className="flex items-center space-x-6 mt-20">
                 <img
-                    src="./public/skillLinkLogo.jpg"
-                    alt="Profile"
+                    src="https://tse1.mm.bing.net/th/id/OIP.7O4_GREtLbxqPdJCTmfatQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+                    alt="Profile Picture"
                     className="w-24 h-24 rounded-full object-cover"
                 />
                 <div>

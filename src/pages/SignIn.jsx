@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { Asterisk } from 'lucide-react'
 
 const SignIn = () => {
   const formik = useFormik({
@@ -30,13 +31,13 @@ const SignIn = () => {
   const getInputStyles = (fieldName) => {
     const isTouched = formik.touched[fieldName]
     const hasError = formik.errors[fieldName]
-    
+
     const baseStyles = "block w-full rounded-md bg-white px-3 py-2.5 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6 border"
-    
+
     if (isTouched && hasError) {
       return `${baseStyles} border-red-500 outline-none focus:outline-red-500`
     }
-    
+
     return `${baseStyles} border-gray-300 focus:outline-blue-500 focus:border-blue-500`
   }
 
@@ -49,10 +50,10 @@ const SignIn = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <img 
-            src="./public/skillLinkLogo.jpg" 
-            alt="Skill Link Logo" 
-            className="mx-auto h-20 w-auto" 
+          <img
+            src="./skillLinkLogo.png"
+            alt="Skill Link Logo"
+            className="mx-auto h-20 w-auto mt-2"
           />
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
@@ -67,18 +68,21 @@ const SignIn = () => {
         <div className="bg-white py-8 px-6 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleFormSubmit}>
             <div>
-              <label 
-                htmlFor="email" 
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
-                <input 
-                  id="email" 
-                  type="email" 
-                  name="email" 
-                  required 
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  required
                   autoComplete="email"
                   className={getInputStyles('email')}
                   onChange={formik.handleChange}
@@ -96,15 +100,18 @@ const SignIn = () => {
 
             <div>
               <div className="flex items-center justify-between">
-                <label 
-                  htmlFor="password" 
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Password
-                </label>
+                <div className="flex align-center">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Password
+                  </label>
+                  <Asterisk size={12} color='red' />
+                </div>
                 <div className="text-sm">
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="font-medium text-blue-500 hover:text-blue-400 transition duration-200"
                   >
                     Forgot password?
@@ -112,11 +119,11 @@ const SignIn = () => {
                 </div>
               </div>
               <div className="mt-1">
-                <input 
-                  id="password" 
-                  type="password" 
-                  name="password" 
-                  required 
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  required
                   autoComplete="current-password"
                   className={getInputStyles('password')}
                   onChange={formik.handleChange}
@@ -133,16 +140,16 @@ const SignIn = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 id="rememberMe"
                 name="rememberMe"
                 checked={formik.values.rememberMe}
                 onChange={formik.handleChange}
                 className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label 
-                htmlFor="rememberMe" 
+              <label
+                htmlFor="rememberMe"
                 className="block text-sm text-gray-700"
               >
                 Remember me
@@ -150,8 +157,8 @@ const SignIn = () => {
             </div>
 
             <div>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="flex w-full justify-center rounded-md bg-blue-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 transition duration-200 shadow-sm"
               >
                 Sign in
@@ -172,8 +179,8 @@ const SignIn = () => {
             </div>
 
             <div className="mt-6 text-center">
-              <Link 
-                to={'/register'} 
+              <Link
+                to={'/register'}
                 className="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 transition duration-200 shadow-sm w-full"
               >
                 Register for free

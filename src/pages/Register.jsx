@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Asterisk } from "lucide-react";
 
 const Register = () => {
   const [image, setImage] = useState(null);
-  
+
   const formik = useFormik({
     initialValues: {
       fullname: "",
@@ -70,13 +71,13 @@ const Register = () => {
   const getInputStyles = (fieldName) => {
     const isTouched = formik.touched[fieldName];
     const hasError = formik.errors[fieldName];
-    
+
     const baseStyles = "block w-full rounded-md bg-white px-3 py-2 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6";
-    
+
     if (isTouched && hasError) {
       return `${baseStyles} border-2 border-red-500 outline-none focus:outline-red-500`;
     }
-    
+
     return `${baseStyles} border border-gray-300 focus:outline-blue-500`;
   };
 
@@ -85,9 +86,9 @@ const Register = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <img
-            src="./public/skillLinkLogo.jpg"
+            src="./skillLinkLogo.png"
             alt="Skill Link Logo"
-            className="mx-auto h-20 w-auto"
+            className="mx-auto h-20 w-auto mt-2"
           />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -104,27 +105,27 @@ const Register = () => {
             {/* Profile Image Upload */}
             <div className="flex justify-center flex-col items-center gap-3 mb-6">
               <div className="relative">
-                <img 
-                  src={image || "/api/placeholder/80/80"} 
-                  alt="Profile preview" 
-                  width={80} 
-                  height={80} 
+                <img
+                  src={image || "/api/placeholder/80/80"}
+                  alt="Profile preview"
+                  width={80}
+                  height={80}
                   className="rounded-full border-2 border-blue-500 object-cover"
                 />
               </div>
               <div className="text-center">
-                <label 
-                  htmlFor="profile-image" 
+                <label
+                  htmlFor="profile-image"
                   className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200"
                 >
                   Upload Photo
                 </label>
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   id="profile-image"
-                  className="hidden" 
+                  className="hidden"
                   accept="image/*"
-                  onChange={getFile} 
+                  onChange={getFile}
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   JPG, PNG (Max 5MB)
@@ -134,12 +135,15 @@ const Register = () => {
 
             {/* Full Name */}
             <div>
-              <label
-                htmlFor="fullname"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Full Name
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="fullname"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Full Name
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
                 <input
                   id="fullname"
@@ -162,12 +166,15 @@ const Register = () => {
 
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
                 <input
                   id="email"
@@ -190,12 +197,15 @@ const Register = () => {
 
             {/* Username */}
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Username
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
                 <input
                   id="username"
@@ -218,12 +228,15 @@ const Register = () => {
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
                 <input
                   id="password"
@@ -246,12 +259,15 @@ const Register = () => {
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm Password
-              </label>
+              <div className="flex align-center">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Confirm Password
+                </label>
+                <Asterisk size={12} color='red' />
+              </div>
               <div className="mt-1">
                 <input
                   id="confirmPassword"

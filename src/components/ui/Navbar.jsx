@@ -12,7 +12,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
         <div className="flex gap-3.5 justify-between items-center h-16">
           <Link to={'/'}  className="text-2xl font-bold text-blue-600">
-            SkillLink
+            <img src="./skillLinkLogo.png"  alt="" width={100} />
           </Link>
 
           {/* <img className='w-30' src="/public/skillLinkLogo.jpg" alt="SkillLink Logo" /> */}

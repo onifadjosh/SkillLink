@@ -2,7 +2,6 @@
 import React from 'react'
 import { Button } from './button'
 import { useState } from "react"
-// import {Button} from "@/components/ui/button"
 import { MdMenu, MdClose } from "react-icons/md"
 import { Link } from 'react-router-dom'
 
@@ -12,9 +11,9 @@ const Navbar = () => {
     <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4">
         <div className="flex gap-3.5 justify-between items-center h-16">
-          <div className="text-2xl font-bold text-blue-600">
+          <Link to={'/'}  className="text-2xl font-bold text-blue-600">
             SkillLink
-          </div>
+          </Link>
 
           {/* <img className='w-30' src="/public/skillLinkLogo.jpg" alt="SkillLink Logo" /> */}
           {/* <input className='p-3 w-70 border-2' type="text" name="" id="" placeholder='What link are you looking for?' /> */}

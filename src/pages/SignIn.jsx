@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { Asterisk } from 'lucide-react'
+import axios from 'axios'
+import { ToastService } from '@/components/Toast'
 
 const SignIn = () => {
+  const [loading, setloading] = useState(false)
+  const [error, seterror] = useState(null)
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -23,8 +27,30 @@ const SignIn = () => {
         .min(6, 'Password must be at least 6 characters'),
     }),
 
-    onSubmit: (values) => {
+    onSubmit: async(values) => {
       console.log('Sign in attempt:', values)
+      try {
+        setloading(true)
+        let response = await axios.post('http://localhost:5007/user/login', {
+          email:values.email,
+          password:values.password
+        })
+        if(response.data.status == true){
+          ToastService.success('Login successful')
+          
+        }else{
+          seterror(response.data.message)
+          ToastService.error(response.data.message)
+        }
+      } catch (error) {
+        console.log(error)
+      }finally{
+        setloading(false)
+      }
+
+
+
+
     },
   })
 
@@ -161,7 +187,7 @@ const SignIn = () => {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-blue-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 transition duration-200 shadow-sm"
               >
-                Sign in
+                {loading?'Logging in ...': 'Sign in'}
               </button>
             </div>
           </form>

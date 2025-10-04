@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound'
 import Register from './pages/Register'
 import ProfilePage from './pages/ProfilePage'
 import EditProfile from './pages/EditProfile'
+import { ToastContainer } from './components/Toast'
 
 
 
@@ -15,13 +16,13 @@ const App = () => {
   return (
     <div>
       <Navbar />
+        <ToastContainer />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<SignIn />} />
         <Route path='/register' element={<Register/>} />
         <Route path='/profile' element={<ProfilePage/>} />
         <Route path='editprofile' element={<EditProfile/>}/>
-
 
 
 

@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Asterisk } from "lucide-react";
-import Axios from "axios";
+import axios from "axios";
 import { ToastService } from "../components/Toast";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [loading, setloading] = useState(false);
 
@@ -158,34 +160,15 @@ const Register = () => {
         dateOfBirth: new Date(values.dateOfBirth),
       };
 
-      console.log("Submitting data:", submitData);
-
       try {
-        let response = await Axios.post("http://localhost:5007/user/signup", {
-          fullname: submitData.fullname,
-          email: submitData.email,
-          username: submitData.username,
-          password: submitData.password,
-          gender: submitData.gender,
-          dateOfBirth: submitData.dateOfBirth,
-          skill: submitData.skill,
-          profilePicture: submitData.profilePicture
-            ? submitData.profilePicture
-            : null,
-        });
+        const response = await axios.post("http://localhost:5007/user/signup", submitData);
         console.log("Registration successful:", response.data);
-        ToastService.info('Account created successfully.🥳');
-
-        
-
-       
+        ToastService.success('Account created successfully.🥳');
+        navigate('/login');
       } catch (error) {
-        console.log("Registration error:", error);
-        if (error.response?.status === 409) {
-          ToastService.error('Email or username already exists');
-        } else {
-          ToastService.error('Registration failed. Please try again.');
-        }
+        console.error("Registration error:", error);
+        const message = error.response?.data?.message || 'Registration failed. Please try again.';
+        ToastService.error(message);
       } finally {
         setloading(false);
       }

@@ -5,8 +5,12 @@ import * as yup from 'yup'
 import { Asterisk } from 'lucide-react'
 import axios from 'axios'
 import { ToastService } from '@/components/Toast'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const SignIn = () => {
+  const { login } = useAuth()
+  const navigate = useNavigate()
   const [loading, setloading] = useState(false)
   const [error, seterror] = useState(null)
   const formik = useFormik({
@@ -31,26 +35,36 @@ const SignIn = () => {
       console.log('Sign in attempt:', values)
       try {
         setloading(true)
-        let response = await axios.post('http://localhost:5007/user/login', {
-          email:values.email,
-          password:values.password
+        seterror(null)
+        const response = await axios.post('http://localhost:5007/user/login', {
+          email: values.email,
+          password: values.password
         })
-        if(response.data.status == true){
-          ToastService.success('Login successful')
+        
+        console.log('Login Response:', response.data);
+        
+        if (response.data.status === true || response.data.token || response.data.success === true) {
+          const token = response.data.token || response.data.data?.token;
+          const user = response.data.user || response.data.data?.user;
           
-        }else{
-          seterror(response.data.message)
-          ToastService.error(response.data.message)
+          if (token && user) {
+            login(user, token);
+          }
+          ToastService.success('Login successful');
+          navigate('/');
+        } else {
+          const errMsg = response.data.message || 'Login failed';
+          seterror(errMsg);
+          ToastService.error(errMsg);
         }
       } catch (error) {
-        console.log(error)
-      }finally{
+        console.error('Login error:', error);
+        const message = error.response?.data?.message || 'Something went wrong. Please try again.';
+        seterror(message);
+        ToastService.error(message);
+      } finally {
         setloading(false)
       }
-
-
-
-
     },
   })
 

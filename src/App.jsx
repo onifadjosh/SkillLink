@@ -7,14 +7,22 @@ import NotFound from './pages/NotFound'
 import Register from './pages/Register'
 import ProfilePage from './pages/ProfilePage'
 import EditProfile from './pages/EditProfile'
+import Explore from './pages/Explore'
+import ProductDetails from './pages/ProductDetails'
+import CreateProduct from './pages/CreateProduct'
+import MyProducts from './pages/MyProducts'
+import Dashboard from './pages/Dashboard'
+import Inbox from './pages/Inbox'
+import AdminDashboard from './pages/AdminDashboard'
 import { ToastContainer } from './components/Toast'
-
+import { AuthProvider } from './context/AuthContext'
 
 
 
 const App = () => {
   return (
-    <div>
+    <AuthProvider>
+      <div>
       <Navbar />
         <ToastContainer />
       <Routes>
@@ -22,7 +30,14 @@ const App = () => {
         <Route path='/login' element={<SignIn />} />
         <Route path='/register' element={<Register/>} />
         <Route path='/profile' element={<ProfilePage/>} />
-        <Route path='editprofile' element={<EditProfile/>}/>
+        <Route path='/editprofile' element={<EditProfile/>}/>
+        <Route path='/explore' element={<Explore />} />
+        <Route path='/product/:id' element={<ProductDetails />} />
+        <Route path='/create-service' element={<CreateProduct />} />
+        <Route path='/my-services' element={<MyProducts />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/inbox' element={<Inbox />} />
+        <Route path='/admin' element={<AdminDashboard />} />
 
 
 
@@ -31,6 +46,7 @@ const App = () => {
         <Route path='/*' element={<NotFound/>}/>
       </Routes>
     </div>
+    </AuthProvider>
   )
 }
 

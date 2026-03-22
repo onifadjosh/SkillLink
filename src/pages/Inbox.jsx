@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Search, Send, Phone, Video, Info, MoreVertical, CheckCircle2, Paperclip, Smile, MessageSquare } from 'lucide-react';
 import { Input } from '../components/ui/input';
@@ -7,19 +7,6 @@ import Footer from '../components/ui/Footer';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 
-const MOCK_CHATS = [
-  { id: 1, name: 'Alex Johnson', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop', lastMessage: 'Can you deliver by Friday?', time: '2m ago', unread: 2, status: 'Online' },
-  { id: 2, name: 'Sarah Smith', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop', lastMessage: 'The design looks great!', time: '1h ago', unread: 0, status: 'Offline' },
-  { id: 3, name: 'Michael Chen', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=1974&auto=format&fit=crop', lastMessage: 'I have a few questions about the code.', time: '3h ago', unread: 0, status: 'Online' },
-  { id: 4, name: 'Jessica Williams', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop', lastMessage: 'Sent you the requirements document.', time: 'Yesterday', unread: 0, status: 'Offline' },
-];
-
-const MOCK_MESSAGES = [
-  { id: 1, sender: 'Alex Johnson', content: 'Hi! I saw your service for UI/UX design.', time: '10:05 AM', type: 'received' },
-  { id: 2, sender: 'You', content: 'Hello Alex! Yes, how can I help you today?', time: '10:07 AM', type: 'sent' },
-  { id: 3, sender: 'Alex Johnson', content: 'I need a mobile app designed for a delivery service. Something clean and modern.', time: '10:10 AM', type: 'received' },
-  { id: 4, sender: 'Alex Johnson', content: 'Can you deliver by Friday?', time: '10:11 AM', type: 'received' },
-];
 
 const Inbox = () => {
   const [chats, setChats] = useState([]);
@@ -31,13 +18,14 @@ const Inbox = () => {
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const myId = user._id || user.id;
+  const messagesEndRef = useRef(null);
 
   console.log("Current User ID (myId):", myId);
   console.log("Current User Object:", user);
 
-  const fetchChats = async () => {
+  const fetchChats = async (silent = false) => {
     try {
-      setLoadingChats(true);
+      if (!silent) setLoadingChats(true);
       const response = await axios.get("http://localhost:5007/message/list", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -50,13 +38,13 @@ const Inbox = () => {
     } catch (error) {
       console.error("Error fetching chats:", error);
     } finally {
-      setLoadingChats(false);
+      if (!silent) setLoadingChats(false);
     }
   };
 
-  const fetchMessages = async (otherUserId) => {
+  const fetchMessages = async (otherUserId, silent = false) => {
     try {
-      setLoadingMessages(true);
+      if (!silent) setLoadingMessages(true);
       const response = await axios.get(`http://localhost:5007/message/${otherUserId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -65,17 +53,44 @@ const Inbox = () => {
       console.log("Fetch Messages Response Data:", response.data);
       const messageData = response.data.chat || response.data.messages || response.data.data || response.data;
       console.log("Extracted Message Data:", messageData);
-      setMessages(Array.isArray(messageData) ? messageData : []);
+      const sortedMessages = Array.isArray(messageData) 
+        ? [...messageData].sort((a, b) => new Date(a.createdAt || a.time).getTime() - new Date(b.createdAt || b.time).getTime()) 
+        : [];
+      setMessages(sortedMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
-      setLoadingMessages(false);
+      if (!silent) setLoadingMessages(false);
     }
   };
 
   useEffect(() => {
+    // Initial fetch
     fetchChats();
-  }, []);
+
+    // Set up 30-second polling for background updates
+    const pollInterval = setInterval(() => {
+      console.log("Running background poll...");
+      fetchChats(true); // Silent update
+      
+      if (selectedChat) {
+        const otherUserId = getOtherUserId(selectedChat);
+        if (otherUserId && otherUserId !== 'undefined') {
+          fetchMessages(otherUserId, true); // Silent update
+        }
+      }
+    }, 30000);
+
+    return () => clearInterval(pollInterval);
+  }, [selectedChat]); // Re-run when selectedChat changes to ensure we poll the right messages
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     const incomingSeller = location.state?.seller;
@@ -114,7 +129,27 @@ const Inbox = () => {
     if (selectedChat) {
       const otherUserId = getOtherUserId(selectedChat);
       console.log("Determined otherUserId for fetchMessages:", otherUserId);
-      if (otherUserId && otherUserId !== 'undefined') fetchMessages(otherUserId);
+      if (otherUserId && otherUserId !== 'undefined') {
+        fetchMessages(otherUserId);
+        
+        // Optimistically clear unread count for the selected chat
+        setChats(prev => prev.map(c => {
+          const chatOtherId = getOtherUserId(c);
+          if (chatOtherId && String(chatOtherId) === String(otherUserId)) {
+            return { 
+              ...c, 
+              unreadCount: 0, 
+              unread: 0, 
+              unread_count: 0, 
+              unreadMessages: 0, 
+              newMessages: 0, 
+              totalUnread: 0, 
+              count: 0 
+            };
+          }
+          return c;
+        }));
+      }
     }
   }, [selectedChat]);
 
@@ -129,12 +164,15 @@ const Inbox = () => {
       return;
     }
 
-    console.log("Sending message to:", otherUserId, "Content:", message);
+    const messageToSend = message;
+    setMessage(''); // Clear input immediately for better UX
+
+    console.log("Sending message to:", otherUserId, "Content:", messageToSend);
 
     try {
       const response = await axios.post('http://localhost:5007/message/send', {
         receiverId: otherUserId,
-        content: message
+        content: messageToSend
       }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -142,32 +180,48 @@ const Inbox = () => {
       });
       
       console.log("Send Message Response Data:", response.data);
-      const newMessage = response.data.message || response.data.chat?.[0] || response.data.data || response.data;
-      console.log("New Message to Append:", newMessage);
       
-      if (newMessage && (newMessage.content || newMessage.chat)) {
-        setMessages(prev => [...prev, newMessage]);
-        setMessage('');
+      // Update local state and refetch in background
+      const optimisticMsg = {
+        _id: 'temp-' + Date.now(),
+        senderId: myId,
+        content: messageToSend,
+        createdAt: new Date().toISOString()
+      };
       
-        if (selectedChat.isVirtual) {
-          fetchChats();
-        } else {
-          // Update last message in chat list locally
-          setChats(prev => prev.map(c => {
-            if (c._id === selectedChat._id || c.id === selectedChat.id) {
-              return { ...c, lastMessage: message, time: 'Just now' };
-            }
-            return c;
-          }));
-        }
+      setMessages(prev => {
+        const newMessages = [...prev, optimisticMsg];
+        return newMessages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      });
+      
+      fetchMessages(otherUserId, true);
+      
+      if (selectedChat.isVirtual) {
+        fetchChats();
+        // If it was a virtual chat, it might now have a real ID after the first message
+        // The fetchChats call will update the list, and the next selection will handle it
+      } else {
+        // Update last message in chat list locally
+        setChats(prev => prev.map(c => {
+          const chatOtherId = getOtherUserId(c);
+          const selectedOtherId = getOtherUserId(selectedChat);
+          
+          if (chatOtherId && selectedOtherId && chatOtherId === selectedOtherId) {
+            return { ...c, lastMessage: `You: ${messageToSend}`, time: 'Just now' };
+          }
+          return c;
+        }));
       }
     } catch (error) {
       console.error("Error sending message:", error);
+      // Restore message if send failed
+      setMessage(messageToSend);
     }
   };
 
   const getOtherUser = (chat) => {
     if (!chat) return null;
+    if (chat.otherUser) return chat.otherUser; // New backend format
     if (chat.participants) return chat.participants.find(p => (p._id || p.id) !== myId);
     if (chat.senderId && chat.receiverId) {
       const sId = (chat.senderId?._id || chat.senderId?.id || chat.senderId);
@@ -197,7 +251,17 @@ const Inbox = () => {
           {/* Sidebar - Chat List */}
           <div className="w-full md:w-80 lg:w-96 border-r border-slate-100 flex flex-col h-full bg-slate-50/30">
             <div className="p-6">
-              <h2 className="text-2xl font-extrabold text-slate-900 mb-6">Messages</h2>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-extrabold text-slate-900">Messages</h2>
+                {(() => {
+                  const total = chats.reduce((acc, c) => acc + (c.unread || c.unreadCount || c.unread_count || c.unreadMessages || c.newMessages || c.totalUnread || c.count || 0), 0);
+                  return total > 0 && (
+                    <span className="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg shadow-indigo-100">
+                      {total}
+                    </span>
+                  );
+                })()}
+              </div>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                 <Input 
@@ -217,6 +281,7 @@ const Inbox = () => {
                   const otherUser = getOtherUser(chat);
                   const isSelected = selectedChat && (selectedChat._id === chat._id || selectedChat.id === chat.id || 
                     (selectedChat.isVirtual && selectedChat._id === 'virtual-' + (otherUser?._id || otherUser?.id)));
+                  const unreadCount = chat.unread || chat.unreadCount || chat.unread_count || chat.unreadMessages || chat.newMessages || chat.totalUnread || chat.count || 0;
                   
                   return (
                     <button
@@ -244,12 +309,27 @@ const Inbox = () => {
                           <span className="text-[10px] font-bold text-slate-400 uppercase">{chat.time || chat.updatedAt?.slice(0, 10)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <p className={`text-sm truncate w-40 ${chat.unread > 0 ? 'text-indigo-600 font-bold' : 'text-slate-500'}`}>
-                            {chat.lastMessage || 'No messages yet'}
+                          <p className={`text-sm truncate w-40 ${unreadCount > 0 ? 'text-indigo-600 font-bold' : 'text-slate-500'}`}>
+                            {(() => {
+                              // Use backend provided lastMessage if available
+                              const content = chat.lastMessage || chat.latestMessage || chat.message || chat.content;
+                              
+                              if (!content) return 'No messages yet';
+                              
+                              const isMe = chat.lastSenderId === myId || chat.senderId === myId;
+                              const firstName = otherUser.fullname?.split(' ')[0] || otherUser.name?.split(' ')[0] || 'User';
+                              const senderPrefix = isMe ? 'You' : firstName;
+
+                              if (content.startsWith('You:') || content.startsWith(`${firstName}:`)) {
+                                return content;
+                              }
+                              
+                              return `${senderPrefix}: ${content}`;
+                            })()}
                           </p>
-                          {chat.unread > 0 && (
+                          {unreadCount > 0 && (
                             <span className="bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg shadow-indigo-100">
-                              {chat.unread}
+                              {unreadCount}
                             </span>
                           )}
                         </div>
@@ -322,7 +402,17 @@ const Inbox = () => {
                               {msg.content}
                             </div>
                             <div className="flex items-center gap-2 mt-1 px-2">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                              <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                {(() => {
+                                  try {
+                                    const date = new Date(msg.createdAt || msg.time);
+                                    if (isNaN(date.getTime())) return msg.time || '';
+                                    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+                                  } catch (e) {
+                                    return msg.time || '';
+                                  }
+                                })()}
+                              </span>
                               {isSentByMe && <CheckCircle2 className="w-3 h-3 text-indigo-400" />}
                             </div>
                           </div>
@@ -334,6 +424,7 @@ const Inbox = () => {
                       <p className="text-slate-400">No messages yet. Say hello!</p>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
 
                 {/* Input Area */}

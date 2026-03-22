@@ -6,6 +6,7 @@ import Footer from '../components/ui/Footer';
 import axios from 'axios';
 import { Loader2, Trash2 } from 'lucide-react';
 import { ToastService } from '@/components/Toast';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('users');
